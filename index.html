@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Launch</title>
+    <style>
+        body { background: #121212; color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .container { text-align: center; }
+        #launchBtn {
+            background: #ff4b2b;
+            color: white;
+            border: none;
+            padding: 25px 50px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 75, 43, 0.5);
+            transition: 0.2s;
+        }
+        #launchBtn:active { transform: scale(0.95); background: #ff416c; }
+        #status { margin-top: 20px; font-size: 14px; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="launchBtn" onclick="sendSignal()">🚀 LAUNCH</button>
+        <p id="status">Ready for Signal...</p>
+    </div>
+
+    <script>
+        async function sendSignal() {
+            const btn = document.getElementById('launchBtn');
+            const status = document.getElementById('status');
+            const topic = 'YOUR_TOPIC_HERE'; // <-- CHANGE THIS to your unique topic name
+
+            btn.disabled = true;
+            status.innerText = "Sending...";
+
+            try {
+                const response = await fetch(`https://ntfy.sh/${topic}`, {
+                    method: 'POST',
+                    body: 'The launch button has been pressed!',
+                    headers: { 'Title': 'Incoming Launch Signal' }
+                });
+
+                if (response.ok) {
+                    status.innerText = "SIGNAL SENT SUCCESSFULLY!";
+                    status.style.color = "#4CAF50";
+                } else {
+                    throw new Error();
+                }
+            } catch (err) {
+                status.innerText = "Error sending signal.";
+                status.style.color = "#f44336";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
